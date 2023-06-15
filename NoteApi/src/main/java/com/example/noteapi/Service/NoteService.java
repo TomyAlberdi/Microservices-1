@@ -5,6 +5,8 @@ import com.example.noteapi.DTO.NoteDTO;
 import com.example.noteapi.Entity.Note;
 import com.example.noteapi.Entity.User;
 import com.example.noteapi.Repository.NoteRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,13 +28,23 @@ public class NoteService {
         note.setText(noteDTO.getText());
         note.setTitle(noteDTO.getTitle());
 
-        Optional<User> userOptional = Optional.ofNullable(userServiceClient.searchById(noteDTO.getUser_id()));
+        Optional<User> userOptional = Optional.ofNullable(findUser(noteDTO.getUser_id()));
         if (userOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         } else {
             note.setUser_id(noteDTO.getUser_id());
             return noteRepository.save(note);
         }
+    }
+
+    @Retry(name = "retryNote")
+    @CircuitBreaker(name = "clientNote", fallbackMethod = "findUserFallback")
+    private User findUser(Long id) {
+        return userServiceClient.searchById(id);
+    }
+
+    public User findUserFallback(Long id, Throwable t) throws Exception {
+        throw new Exception("User Not Found");
     }
 
     public List<Note> listByUserId(Long id) {

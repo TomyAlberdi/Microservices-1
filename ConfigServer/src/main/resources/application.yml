@@ -7,4 +7,4 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/TomyAlberdi/spring-cloud-config
+          uri: https://github.com/TomyAlberdi/spring-cloud-config-Microservices-1

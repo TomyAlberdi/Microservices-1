@@ -3,7 +3,7 @@ package com.example.noteapi.Controller;
 import com.example.noteapi.Client.UserServiceClient;
 import com.example.noteapi.DTO.NoteDTO;
 import com.example.noteapi.Entity.Note;
-import com.example.noteapi.Entity.User;
+import com.example.noteapi.DTO.UserDTO;
 import com.example.noteapi.Service.NoteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class NoteController {
 
     @PostMapping("/add")
     public ResponseEntity<?> add(@Valid @RequestBody NoteDTO noteDTO) {
-        Optional<User> user = Optional.ofNullable(userServiceClient.searchById(noteDTO.getUser_id()));
+        Optional<UserDTO> user = Optional.ofNullable(userServiceClient.searchById(noteDTO.getUser_id()));
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User id " + noteDTO.getUser_id() + " do not exists");
         } else {
@@ -70,7 +70,7 @@ public class NoteController {
 
     @PatchMapping("/update")
     public ResponseEntity<?> update(@RequestBody Note note) {
-        Optional<User> user = Optional.ofNullable(userServiceClient.searchById(note.getUser_id()));
+        Optional<UserDTO> user = Optional.ofNullable(userServiceClient.searchById(note.getUser_id()));
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User id " + note.getUser_id() + " do not exists");
         } else {

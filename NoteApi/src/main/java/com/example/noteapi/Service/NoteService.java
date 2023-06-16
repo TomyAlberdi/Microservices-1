@@ -3,7 +3,7 @@ package com.example.noteapi.Service;
 import com.example.noteapi.Client.UserServiceClient;
 import com.example.noteapi.DTO.NoteDTO;
 import com.example.noteapi.Entity.Note;
-import com.example.noteapi.Entity.User;
+import com.example.noteapi.DTO.UserDTO;
 import com.example.noteapi.Repository.NoteRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -28,7 +28,7 @@ public class NoteService {
         note.setText(noteDTO.getText());
         note.setTitle(noteDTO.getTitle());
 
-        Optional<User> userOptional = Optional.ofNullable(findUser(noteDTO.getUser_id()));
+        Optional<UserDTO> userOptional = Optional.ofNullable(findUser(noteDTO.getUser_id()));
         if (userOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         } else {
@@ -39,11 +39,11 @@ public class NoteService {
 
     @Retry(name = "retryNote")
     @CircuitBreaker(name = "clientNote", fallbackMethod = "findUserFallback")
-    private User findUser(Long id) {
+    private UserDTO findUser(Long id) {
         return userServiceClient.searchById(id);
     }
 
-    public User findUserFallback(Long id, Throwable t) throws Exception {
+    public UserDTO findUserFallback(Long id, Throwable t) throws Exception {
         throw new Exception("User Not Found");
     }
 

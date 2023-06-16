@@ -1,6 +1,6 @@
 package com.example.noteapi.Client;
 
-import com.example.noteapi.Entity.User;
+import com.example.noteapi.DTO.UserDTO;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserServiceClient {
 
     @GetMapping("/users/search/{id}")
-    User searchById(@PathVariable Long id);
+    UserDTO searchById(@PathVariable Long id);
 
 
 }

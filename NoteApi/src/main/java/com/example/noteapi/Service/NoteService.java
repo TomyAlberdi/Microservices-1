@@ -59,6 +59,10 @@ public class NoteService {
         noteRepository.deleteById(id);
     }
 
+    public void deleteAllByUser(Long id) {
+        noteRepository.deleteAllByUser(id);
+    }
+
     public List<Note> searchNote(Long id, String string) {
         return noteRepository.searchNote(id, string);
     }
